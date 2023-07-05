@@ -1,14 +1,13 @@
 const express = require('express');
 const router = express.Router();
 
-const { Posts, Comments } = require('../models');
+const { Users, Posts, Comments } = require('../models');
 const authMiddleware = require('../middlewares/auth-middleware.js');
 
 // 댓글 작성 API
 router.post('/comments/:postId', authMiddleware, async (req, res) => {
   try {
     const userId = res.locals.user;
-    console.log(userId);
     const { postId } = req.params;
     const { content } = req.body;
 
@@ -33,6 +32,31 @@ router.post('/comments/:postId', authMiddleware, async (req, res) => {
     });
     return;
   }
+});
+
+// 댓글 조회 API
+router.get('/comments/:postId', async (req, res) => {
+  const { postId } = req.params;
+  const findPostId = await Posts.findOne({ where: { postId } });
+
+  if (!findPostId) {
+    return res
+      .status(404)
+      .json({ errorMessage: '게시글이 존재하지 않습니다.' });
+  }
+
+  const commentList = await Comments.findAll({
+    attributes: ['commentId', 'content', 'createdAt', 'updatedAt'],
+    where: { postId },
+    order: [['createdAt', 'DESC']],
+    include: [
+      {
+        model: Users,
+        attributes: ['nickname'],
+      },
+    ],
+  });
+  return res.status(200).json({ comments: commentList });
 });
 
 module.exports = router;
