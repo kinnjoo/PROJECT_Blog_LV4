@@ -19,7 +19,7 @@ router.get('/posts', async (req, res) => {
     ],
   });
 
-  res.status(200).json({ posts: postList });
+  return res.status(200).json({ posts: postList });
 });
 
 // 게시글 상세 조회 API
@@ -38,7 +38,9 @@ router.get('/posts/:postId', async (req, res) => {
   });
 
   if (!postDetail) {
-    res.status(404).json({ errorMessage: '게시글 조회에 실패하였습니다.' });
+    return res
+      .status(404)
+      .json({ errorMessage: '게시글 조회에 실패하였습니다.' });
   }
   return res.json({ post: postDetail });
 });
@@ -79,8 +81,8 @@ router.put('/posts/:postId', authMiddleware, async (req, res) => {
       .status(412)
       .json({ errorMessage: '게시글 제목 또는 내용이 비어있습니다.' });
   }
-  await Posts.update({ title, content }, { where: { [Op.and]: [{ postId }] } });
 
+  await Posts.update({ title, content }, { where: { [Op.and]: [{ postId }] } });
   return res.status(200).json({ message: '게시글을 수정하였습니다.' });
 });
 
