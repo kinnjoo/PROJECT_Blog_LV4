@@ -98,4 +98,23 @@ router.put('/comments/:commentId', authMiddleware, async (req, res) => {
   }
 });
 
+// 댓글 삭제 API
+router.delete('/comments/:commentId', authMiddleware, async (req, res) => {
+  const userId = res.locals.user;
+  const { commentId } = req.params;
+
+  const findCommentId = await Comments.findOne({ where: { commentId } });
+
+  if (!findCommentId) {
+    return res.status(404).json({ errorMessage: '존재하지 않는 댓글입니다.' });
+  } else if (userId !== findCommentId.UserId) {
+    return res.status(403).json({ errorMessage: '댓글 삭제 권한이 없습니다.' });
+  }
+
+  await Comments.destroy({
+    where: { [Op.and]: [{ commentId }] },
+  });
+  return res.status(200).json({ message: '댓글을 삭제하였습니다.' });
+});
+
 module.exports = router;
