@@ -9,7 +9,7 @@ const { Op } = require('sequelize');
 // 게시글 목록 조회 API
 router.get('/posts', async (req, res) => {
   const postList = await Posts.findAll({
-    attributes: ['postId', 'title', 'createdAt', 'updatedAt'],
+    attributes: ['postId', 'title', 'likes', 'createdAt', 'updatedAt'],
     order: [['createdAt', 'DESC']],
     include: [
       {
@@ -27,7 +27,14 @@ router.get('/posts/:postId', async (req, res) => {
   const { postId } = req.params;
 
   const postDetail = await Posts.findOne({
-    attributes: ['postId', 'title', 'content', 'createdAt', 'updatedAt'],
+    attributes: [
+      'postId',
+      'title',
+      'content',
+      'likes',
+      'createdAt',
+      'updatedAt',
+    ],
     where: { postId },
     include: [
       {
