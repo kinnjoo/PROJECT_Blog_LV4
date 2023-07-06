@@ -47,7 +47,7 @@ router.get('/posts/:postId', async (req, res) => {
   if (!postDetail) {
     return res
       .status(404)
-      .json({ errorMessage: '게시글 조회에 실패하였습니다.' });
+      .json({ errorMessage: '존재하지 않는 게시글입니다.' });
   }
   return res.json({ post: postDetail });
 });
@@ -78,7 +78,7 @@ router.put('/posts/:postId', authMiddleware, async (req, res) => {
   if (!findPostId) {
     return res
       .status(404)
-      .json({ errorMessage: '게시글 조회에 실패하였습니다.' });
+      .json({ errorMessage: '존재하지 않는 게시글입니다.' });
   } else if (userId !== findPostId.UserId) {
     return res
       .status(403)
@@ -103,7 +103,7 @@ router.delete('/posts/:postId', authMiddleware, async (req, res) => {
   if (!findPostId) {
     return res
       .status(404)
-      .json({ errorMessage: '게시글 조회에 실패하였습니다.' });
+      .json({ errorMessage: '존재하지 않는 게시글입니다.' });
   } else if (userId !== findPostId.UserId) {
     return res
       .status(403)

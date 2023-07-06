@@ -18,7 +18,7 @@ router.post('/comments/:postId', authMiddleware, async (req, res) => {
     if (!findPostId) {
       return res
         .status(404)
-        .json({ errorMessage: '게시글이 존재하지 않습니다.' });
+        .json({ errorMessage: '존재하지 않는 게시글입니다.' });
     } else if (!content) {
       return res
         .status(412)
@@ -44,7 +44,7 @@ router.get('/comments/:postId', async (req, res) => {
   if (!findPostId) {
     return res
       .status(404)
-      .json({ errorMessage: '게시글이 존재하지 않습니다.' });
+      .json({ errorMessage: '존재하지 않는 게시글입니다.' });
   }
 
   const commentList = await Comments.findAll({
@@ -73,7 +73,7 @@ router.put('/comments/:commentId', authMiddleware, async (req, res) => {
     if (!findCommentId) {
       return res
         .status(404)
-        .json({ errorMessage: '댓글이 존재하지 않습니다.' });
+        .json({ errorMessage: '존재하지 않는 댓글입니다.' });
     } else if (userId !== findCommentId.UserId) {
       return res
         .status(403)
