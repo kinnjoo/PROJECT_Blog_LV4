@@ -1,7 +1,7 @@
 'use strict';
 const { Model } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
-  class Posts extends Model {
+  class Likes extends Model {
     /**
      * Helper method for defining associations.
      * This method is not a part of Sequelize lifecycle.
@@ -12,47 +12,45 @@ module.exports = (sequelize, DataTypes) => {
         targetKey: 'userId',
         foreignKey: 'UserId',
       });
-      this.hasMany(models.Comments, {
-        sourceKey: 'postId',
-        foreignKey: 'PostId',
-      });
-      this.hasMany(models.Likes, {
-        sourceKey: 'postId',
+      this.belongsTo(models.Posts, {
+        targetKey: 'postId',
         foreignKey: 'PostId',
       });
     }
   }
-
-  Posts.init(
+  Likes.init(
     {
-      postId: {
+      likeId: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
-        type: DataTypes.INTEGER,
+        type: DataTypes.UUID,
+        defaultValue: DataTypes.UUIDV4,
       },
       UserId: {
         allowNull: false,
         type: DataTypes.INTEGER,
+        references: {
+          model: 'Users',
+          key: 'userId',
+        },
+        onDelete: 'CASCADE',
       },
-      title: {
+      PostId: {
         allowNull: false,
-        type: DataTypes.STRING,
-      },
-      content: {
-        allowNull: false,
-        type: DataTypes.STRING,
-      },
-      createdAt: {
-        allowNull: false,
-        type: DataTypes.DATE,
-        defaultValue: DataTypes.NOW,
+        type: DataTypes.INTEGER,
+        references: {
+          model: 'Posts',
+          key: 'postId',
+        },
+        onDelete: 'CASCADE',
       },
     },
     {
       sequelize,
-      modelName: 'Posts',
+      modelName: 'Likes',
+      timestamps: false,
     },
   );
-  return Posts;
+  return Likes;
 };
