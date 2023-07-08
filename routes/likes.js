@@ -58,6 +58,10 @@ router.get('/postsLike', authMiddleware, async (req, res) => {
     ],
   });
 
+  if (likes.length === 0) {
+    return res.status(200).json({ message: '좋아요한 게시글이 없습니다.' });
+  }
+
   return res.status(200).json({ likes });
 });
 
