@@ -39,7 +39,7 @@ router.post('/posts/:postId/like', authMiddleware, async (req, res) => {
 });
 
 // 좋아요한 게시글 조회 API
-router.get('/postsLike', authMiddleware, async (req, res) => {
+router.get('/likes/posts', authMiddleware, async (req, res) => {
   const userId = res.locals.user;
 
   const likes = await Likes.findAll({
@@ -48,12 +48,8 @@ router.get('/postsLike', authMiddleware, async (req, res) => {
     include: [
       {
         model: Posts,
-        attributes: ['title', 'likes', 'postId'],
         order: [['likes', 'DESC']],
-      },
-      {
-        model: Users,
-        attributes: ['nickname'],
+        include: [{ model: Users, attributes: ['nickname'] }],
       },
     ],
   });

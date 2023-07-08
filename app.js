@@ -11,7 +11,7 @@ const likesRouter = require('./routes/likes.js');
 app.use(express.json());
 app.use(cookieParser());
 
-app.use('/', [usersRouter, postsRouter, commentsRouter, likesRouter]);
+app.use('/api', [usersRouter, postsRouter, commentsRouter, likesRouter]);
 
 app.listen(port, () => {
   console.log(port, '포트로 서버가 열렸어요!');
