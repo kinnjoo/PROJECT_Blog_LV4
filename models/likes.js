@@ -22,9 +22,9 @@ module.exports = (sequelize, DataTypes) => {
     {
       likeId: {
         allowNull: false,
+        autoIncrement: true,
         primaryKey: true,
-        type: DataTypes.UUID,
-        defaultValue: DataTypes.UUIDV4,
+        type: DataTypes.INTEGER,
       },
       UserId: {
         allowNull: false,
@@ -44,11 +44,20 @@ module.exports = (sequelize, DataTypes) => {
         },
         onDelete: 'CASCADE',
       },
+      createdAt: {
+        allowNull: false,
+        type: DataTypes.DATE,
+        defaultValue: DataTypes.NOW,
+      },
+      updatedAt: {
+        allowNull: false,
+        type: DataTypes.DATE,
+        defaultValue: DataTypes.NOW,
+      },
     },
     {
       sequelize,
       modelName: 'Likes',
-      timestamps: false,
     },
   );
   return Likes;

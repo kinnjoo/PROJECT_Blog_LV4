@@ -5,9 +5,9 @@ module.exports = {
     await queryInterface.createTable('Likes', {
       likeId: {
         allowNull: false,
+        autoIncrement: true,
         primaryKey: true,
-        type: Sequelize.UUID,
-        defaultValue: Sequelize.UUIDV4,
+        type: Sequelize.INTEGER,
       },
       UserId: {
         allowNull: false,
@@ -26,6 +26,16 @@ module.exports = {
           key: 'postId',
         },
         onDelete: 'CASCADE',
+      },
+      createdAt: {
+        allowNull: false,
+        type: Sequelize.DATE,
+        defaultValue: Sequelize.fn('now'),
+      },
+      updatedAt: {
+        allowNull: false,
+        type: Sequelize.DATE,
+        defaultValue: Sequelize.fn('now'),
       },
     });
   },
