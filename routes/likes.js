@@ -38,4 +38,27 @@ router.post('/posts/:postId/like', authMiddleware, async (req, res) => {
   return res.status(200).json({ message: '좋아요를 취소했습니다.' });
 });
 
+// 좋아요한 게시글 조회 API
+router.get('/postsLike', authMiddleware, async (req, res) => {
+  const userId = res.locals.user;
+
+  const likes = await Likes.findAll({
+    where: { UserId: userId },
+    attributes: ['PostId'],
+    include: [
+      {
+        model: Posts,
+        attributes: ['title', 'likes', 'postId'],
+        order: [['likes', 'DESC']],
+      },
+      {
+        model: Users,
+        attributes: ['nickname'],
+      },
+    ],
+  });
+
+  return res.status(200).json({ likes });
+});
+
 module.exports = router;
