@@ -48,6 +48,7 @@ router.get('/likes/posts', authMiddleware, async (req, res) => {
     include: [
       {
         model: Posts,
+        attributes: ['title', 'content'],
         order: [['likes', 'DESC']],
         include: [{ model: Users, attributes: ['nickname'] }],
       },
