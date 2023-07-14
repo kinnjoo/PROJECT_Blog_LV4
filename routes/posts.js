@@ -4,8 +4,6 @@ const router = express.Router();
 const { Users, Posts } = require('../models');
 const authMiddleware = require('../middlewares/auth-middleware.js');
 
-const { Op } = require('sequelize');
-
 // 게시글 목록 조회 API
 router.get('/posts', async (req, res) => {
   const postList = await Posts.findAll({
@@ -73,7 +71,7 @@ router.put('/posts/:postId', authMiddleware, async (req, res) => {
   const { postId } = req.params;
   const { title, content } = req.body;
 
-  const findPostId = await Posts.findOne({ where: { postId } });
+  const findPostId = await Posts.findOne({ where: { userId, postId } });
 
   if (!title || !content) {
     return res
@@ -81,19 +79,12 @@ router.put('/posts/:postId', authMiddleware, async (req, res) => {
       .json({ errorMessage: '게시글 제목 또는 내용이 비어있습니다.' });
   }
 
+  // DB에 게시글이 없거나 댓글을 작성한 유저가 아닐때
   if (!findPostId) {
-    return res
-      .status(404)
-      .json({ errorMessage: '존재하지 않는 게시글입니다.' });
+    return res.status(404).json({ errorMessage: '잘못된 접근 방법입니다.' });
   }
 
-  if (userId !== findPostId.userId) {
-    return res
-      .status(403)
-      .json({ errorMessage: '게시글의 수정 권한이 존재하지 않습니다.' });
-  }
-
-  await Posts.update({ title, content }, { where: { [Op.and]: [{ postId }] } });
+  await Posts.update({ title, content }, { where: { postId } });
   return res.status(200).json({ message: '게시글을 수정하였습니다.' });
 });
 
@@ -102,22 +93,15 @@ router.delete('/posts/:postId', authMiddleware, async (req, res) => {
   const userId = res.locals.user;
   const { postId } = req.params;
 
-  const findPostId = await Posts.findOne({ where: { postId } });
+  const findPostId = await Posts.findOne({ where: { userId, postId } });
 
+  // DB에 게시글이 없거나 댓글을 작성한 유저가 아닐때
   if (!findPostId) {
-    return res
-      .status(404)
-      .json({ errorMessage: '존재하지 않는 게시글입니다.' });
-  }
-
-  if (userId !== findPostId.userId) {
-    return res
-      .status(403)
-      .json({ errorMessage: '게시글의 삭제 권한이 존재하지 않습니다.' });
+    return res.status(404).json({ errorMessage: '잘못된 접근 방법입니다.' });
   }
 
   await Posts.destroy({
-    where: { [Op.and]: [{ postId }] },
+    where: { postId },
   });
   return res.status(200).json({ message: '게시글을 삭제하였습니다.' });
 });
