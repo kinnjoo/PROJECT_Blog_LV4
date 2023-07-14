@@ -75,18 +75,22 @@ router.put('/posts/:postId', authMiddleware, async (req, res) => {
 
   const findPostId = await Posts.findOne({ where: { postId } });
 
+  if (!title || !content) {
+    return res
+      .status(412)
+      .json({ errorMessage: '게시글 제목 또는 내용이 비어있습니다.' });
+  }
+
   if (!findPostId) {
     return res
       .status(404)
       .json({ errorMessage: '존재하지 않는 게시글입니다.' });
-  } else if (userId !== findPostId.userId) {
+  }
+
+  if (userId !== findPostId.userId) {
     return res
       .status(403)
       .json({ errorMessage: '게시글의 수정 권한이 존재하지 않습니다.' });
-  } else if (!title || !content) {
-    return res
-      .status(412)
-      .json({ errorMessage: '게시글 제목 또는 내용이 비어있습니다.' });
   }
 
   await Posts.update({ title, content }, { where: { [Op.and]: [{ postId }] } });
@@ -104,7 +108,9 @@ router.delete('/posts/:postId', authMiddleware, async (req, res) => {
     return res
       .status(404)
       .json({ errorMessage: '존재하지 않는 게시글입니다.' });
-  } else if (userId !== findPostId.userId) {
+  }
+
+  if (userId !== findPostId.userId) {
     return res
       .status(403)
       .json({ errorMessage: '게시글의 삭제 권한이 존재하지 않습니다.' });

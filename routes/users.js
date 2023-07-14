@@ -22,11 +22,15 @@ router.post('/signup', async (req, res) => {
     return res
       .status(400)
       .json({ errorMessage: '데이터 형식이 올바르지 않습니다.' });
-  } else if (!checkNickname.test(nickname)) {
+  }
+
+  if (!checkNickname.test(nickname)) {
     return res
       .status(412)
       .json({ errorMessage: '닉네임의 형식이 올바르지 않습니다.' });
-  } else if (password.includes(nickname)) {
+  }
+
+  if (password.includes(nickname)) {
     return res
       .status(412)
       .json({ errorMessage: '패스워드에 닉네임이 포함되어 있습니다.' });
@@ -38,7 +42,9 @@ router.post('/signup', async (req, res) => {
     return res
       .status(412)
       .json({ errorMessage: '패스워드가 일치하지 않습니다.' });
-  } else if (isExistUser) {
+  }
+
+  if (isExistUser) {
     return res.status(412).json({ errorMessage: '중복된 닉네임입니다.' });
   }
 
