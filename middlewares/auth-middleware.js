@@ -20,7 +20,6 @@ module.exports = async (req, res, next) => {
     // authToken이 만료되었는지 확인
     // authToken이 서버가 발급한 토큰이 맞는지 검증
     const decodedToken = jwt.verify(authToken, secretKey.key);
-
     const userId = decodedToken.userId;
     res.locals.user = userId;
 

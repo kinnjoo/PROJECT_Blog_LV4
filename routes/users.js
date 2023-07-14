@@ -67,6 +67,7 @@ router.post('/login', async (req, res) => {
   const token = jwt.sign({ userId: user.userId }, secretKey.key);
 
   res.cookie('Authorization', `Bearer ${token}`);
+  console.log(token);
   res.status(200).json({ message: '로그인되었습니다.' });
 });
 

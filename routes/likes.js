@@ -18,7 +18,7 @@ router.post('/posts/:postId/like', authMiddleware, async (req, res) => {
   }
 
   const like = await Likes.findOne({
-    where: { UserId: userId, PostId: post.postId },
+    where: { userId, postId: post.postId },
   });
 
   if (!like) {
@@ -26,7 +26,7 @@ router.post('/posts/:postId/like', authMiddleware, async (req, res) => {
       { likes: post.likes + 1 },
       { where: { postId: post.postId } },
     );
-    await Likes.create({ UserId: userId, PostId: post.postId });
+    await Likes.create({ userId, postId: post.postId });
     return res.status(200).json({ message: '게시물에 좋아요를 눌렀습니다.' });
   }
 
@@ -34,7 +34,7 @@ router.post('/posts/:postId/like', authMiddleware, async (req, res) => {
     { likes: post.likes - 1 },
     { where: { postId: post.postId } },
   );
-  await Likes.destroy({ where: { UserId: userId, PostId: post.postId } });
+  await Likes.destroy({ where: { userId, postId: post.postId } });
   return res.status(200).json({ message: '좋아요를 취소했습니다.' });
 });
 
@@ -43,8 +43,8 @@ router.get('/likes/posts', authMiddleware, async (req, res) => {
   const userId = res.locals.user;
 
   const likes = await Likes.findAll({
-    where: { UserId: userId },
-    attributes: ['PostId'],
+    where: { userId },
+    attributes: ['postId'],
     include: [
       {
         model: Posts,

@@ -25,7 +25,7 @@ router.post('/comments/:postId', authMiddleware, async (req, res) => {
         .json({ errorMessage: '댓글 내용이 비어있습니다.' });
     }
 
-    await Comments.create({ content, UserId: userId, PostId: postId });
+    await Comments.create({ content, userId, postId });
     return res.status(201).json({ message: '댓글을 작성하였습니다.' });
   } catch (error) {
     console.error(error);
@@ -74,7 +74,7 @@ router.put('/comments/:commentId', authMiddleware, async (req, res) => {
       return res
         .status(404)
         .json({ errorMessage: '존재하지 않는 댓글입니다.' });
-    } else if (userId !== findCommentId.UserId) {
+    } else if (userId !== findCommentId.userId) {
       return res
         .status(403)
         .json({ errorMessage: '댓글 수정 권한이 없습니다.' });
@@ -107,7 +107,7 @@ router.delete('/comments/:commentId', authMiddleware, async (req, res) => {
 
   if (!findCommentId) {
     return res.status(404).json({ errorMessage: '존재하지 않는 댓글입니다.' });
-  } else if (userId !== findCommentId.UserId) {
+  } else if (userId !== findCommentId.userId) {
     return res.status(403).json({ errorMessage: '댓글 삭제 권한이 없습니다.' });
   }
 

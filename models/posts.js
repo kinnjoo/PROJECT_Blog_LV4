@@ -10,15 +10,15 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       this.belongsTo(models.Users, {
         targetKey: 'userId',
-        foreignKey: 'UserId',
+        foreignKey: 'userId',
       });
       this.hasMany(models.Comments, {
         sourceKey: 'postId',
-        foreignKey: 'PostId',
+        foreignKey: 'postId',
       });
       this.hasMany(models.Likes, {
         sourceKey: 'postId',
-        foreignKey: 'PostId',
+        foreignKey: 'postId',
       });
     }
   }
@@ -31,7 +31,7 @@ module.exports = (sequelize, DataTypes) => {
         primaryKey: true,
         type: DataTypes.INTEGER,
       },
-      UserId: {
+      userId: {
         allowNull: false,
         type: DataTypes.INTEGER,
       },
